@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const jwt = require('jsonwebtoken');
 const prisma = require('../config/prisma-config');
 
-const authProtection = (req, res, next) => {
+const authProtection = async (req, res, next) => {
 	const token = req.header('Authorization').split(' ')[1];
 	if (!!!token) {
 		return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -15,6 +15,9 @@ const authProtection = (req, res, next) => {
 		req.user = await prisma.user.findUnique({
 			where: {
 				id: verifiedUserId,
+			},
+			include: {
+				profile: true,
 			},
 		});
 		next();

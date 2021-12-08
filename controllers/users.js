@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const prisma = require('../config/prisma-config');
 
-const registerUser = (req, res) => {
+const registerUser = async (req, res) => {
 	const { name, email, password } = req.body;
 	try {
 		const existingUser = await prisma.user.findUnique({
@@ -39,7 +39,7 @@ const registerUser = (req, res) => {
 	}
 };
 
-const loginUser = (req, res) => {
+const loginUser = async (req, res) => {
 	const { email, password } = req.body;
 	try {
 		const existingUser = await prisma.user.findUnique({
@@ -75,7 +75,42 @@ const loginUser = (req, res) => {
 	}
 };
 
+const updateProfile = async (req, res) => {
+	const { bio } = req.body;
+	try {
+		let updatedProfile;
+		if (req.user.profile === null) {
+			updatedProfile = await prisma.profile.create({
+				data: {
+					bio,
+					userId: req.user.id,
+				},
+			});
+		} else {
+			updatedProfile = await prisma.profile.update({
+				where: {
+					userId: req.user.id,
+				},
+				data: {
+					bio,
+				},
+			});
+		}
+		return res.status(StatusCodes.OK).json({
+			success: true,
+			message: 'Profile bio has been updated successfully',
+			updatedProfile,
+		});
+	} catch (error) {
+		res.status(StatusCodes.BAD_REQUEST).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
 module.exports = {
 	registerUser,
 	loginUser,
+	updateProfile,
 };
