@@ -1,56 +1,18 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const express = require('express');
+const userRoutes = require('./routes/users');
 
-const getAllPosts = async () => {
-	const allPosts = await prisma.post.findMany();
-	return allPosts;
-};
+const app = express();
 
-const getAllUsers = async () => {
-	const allUsers = await prisma.user.findMany();
-	return allUsers;
-};
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const createNewUser = async () => {
-	const newUser = await prisma.user.create({
-		data: {
-			name: 'Souptik Sarkar',
-			email: 'souptiksarkar4572@gmail.com',
-			posts: {
-				create: {
-					title: 'Hello everyone, I am Souptik',
-				},
-			},
-			profile: {
-				create: {
-					bio: 'I like cooking',
-				},
-			},
-		},
-	});
-	return newUser;
-};
+app.use('/api/users', userRoutes);
 
-// createNewUser()
-// 	.then((newUser) => {
-// 		console.log(newUser);
-// 	})
-// 	.catch((error) => {
-// 		console.log(error);
-// 	});
+app.get('/', (req, res) => {
+	res.json('This is the root route');
+});
 
-// getAllUsers()
-// 	.then((allUsers) => {
-// 		console.log(allUsers);
-// 	})
-// 	.catch((error) => {
-// 		console.log(error);
-// 	});
-
-getAllPosts()
-	.then((allPosts) => {
-		console.log(allPosts);
-	})
-	.catch((error) => {
-		console.log(error);
-	});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+	console.log(`Server is up and running at http://localhost:${PORT}`);
+});
