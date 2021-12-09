@@ -72,7 +72,8 @@ const createNewPost = async (req, res) => {
 };
 
 const updateExistingPost = async (req, res) => {
-	const { postId } = req.params;
+	let { postId } = req.params;
+	postId = Number(postId);
 	const { title, content, published } = req.body;
 	const updatedData = {};
 	if (title) updatedData.title = title;
@@ -99,7 +100,8 @@ const updateExistingPost = async (req, res) => {
 };
 
 const deleteExistingPost = async (req, res) => {
-	const { postId } = req.params;
+	let { postId } = req.params;
+	postId = Number(postId);
 	try {
 		const deletePost = await prisma.post.delete({
 			where: {
@@ -124,5 +126,5 @@ module.exports = {
 	getParticularPost,
 	createNewPost,
 	updateExistingPost,
-    deleteExistingPost
+	deleteExistingPost,
 };
