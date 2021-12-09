@@ -16,7 +16,8 @@ const authProtection = async (req, res, next) => {
 			where: {
 				id: verifiedUserId,
 			},
-			include: {
+			select: {
+				id: true,
 				profile: true,
 			},
 		});

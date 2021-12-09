@@ -75,10 +75,40 @@ const loginUser = async (req, res) => {
 	}
 };
 
+const getProfile = async (req, res) => {
+	try {
+		const requiredUser = await prisma.user.findUnique({
+			where: {
+				id: req.user.id,
+			},
+			select: {
+				name: true,
+				email: true,
+				profile: {
+					select: {
+						bio: true,
+					},
+				},
+			},
+		});
+		return res.status(StatusCodes.OK).json({
+			success: true,
+			message: `The profile of user with id ${req.user.id}`,
+			profile: requiredUser,
+		});
+	} catch (error) {
+		res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
 const updateProfile = async (req, res) => {
 	const { bio } = req.body;
 	try {
 		let updatedProfile;
+		console.log(req.user.profile);
 		if (req.user.profile === null) {
 			updatedProfile = await prisma.profile.create({
 				data: {
@@ -112,5 +142,6 @@ const updateProfile = async (req, res) => {
 module.exports = {
 	registerUser,
 	loginUser,
+	getProfile,
 	updateProfile,
 };
