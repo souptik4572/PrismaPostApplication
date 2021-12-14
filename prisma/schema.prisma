@@ -10,15 +10,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
+model Comment {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
+  text      String?
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  title     String    @db.VarChar(255)
+  content   String?
+  published Boolean   @default(false)
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  Int
+  Comment   Comment[]
 }
 
 model Profile {
@@ -29,10 +41,11 @@ model Profile {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
   password String
   name     String
   posts    Post[]
   profile  Profile?
+  Comment  Comment[]
 }
