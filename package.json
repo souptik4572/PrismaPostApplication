@@ -1,25 +1,26 @@
 {
-  "name": "hello-prisma",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "devStart": "nodemon index.js",
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "prisma": "^3.6.0"
-  },
-  "dependencies": {
-    "@prisma/client": "^3.6.0",
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "http-status-codes": "^2.1.4",
-    "jsonwebtoken": "^8.5.1"
-  }
+	"name": "hello-prisma",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"devStart": "nodemon index.js",
+		"start": "node index.js",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"heroku-postbuild": "prisma introspect && prisma generate"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"prisma": "^3.6.0"
+	},
+	"dependencies": {
+		"@prisma/client": "^3.6.0",
+		"bcryptjs": "^2.4.3",
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"http-status-codes": "^2.1.4",
+		"jsonwebtoken": "^8.5.1"
+	}
 }
