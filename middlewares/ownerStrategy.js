@@ -25,9 +25,8 @@ const isPostAuthor = async (req, res, next) => {
 	}
 };
 
-const isCommentAuthor = async (req, res) => {
-	let { postId, commentId } = req.params;
-	postId = Number(postId);
+const isCommentAuthor = async (req, res, next) => {
+	let { commentId } = req.params;
 	commentId = Number(commentId);
 	try {
 		const requiredComment = await prisma.comment.findUnique({
@@ -35,7 +34,7 @@ const isCommentAuthor = async (req, res) => {
 				id: commentId,
 			},
 		});
-		if (requiredPost.authorId !== req.user.id) {
+		if (requiredComment.authorId !== req.user.id) {
 			return res.status(StatusCodes.UNAUTHORIZED).json({
 				success: false,
 				message: 'Access denied',

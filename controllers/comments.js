@@ -13,6 +13,7 @@ const getAllComments = async (req, res) => {
 		return res.status(StatusCodes.OK).json({
 			success: true,
 			message: `All comments of the post with id ${postId}`,
+			comments: allComments,
 		});
 	} catch (error) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -88,7 +89,7 @@ const deleteExistingComment = async (req, res) => {
 	let { commentId } = req.params;
 	commentId = Number(commentId);
 	try {
-		const deletedComment = prisma.comment.delete({
+		const deletedComment = await prisma.comment.delete({
 			where: {
 				id: commentId,
 			},
