@@ -25,4 +25,29 @@ const isPostAuthor = async (req, res, next) => {
 	}
 };
 
-module.exports = { isPostAuthor };
+const isCommentAuthor = async (req, res) => {
+	let { postId, commentId } = req.params;
+	postId = Number(postId);
+	commentId = Number(commentId);
+	try {
+		const requiredComment = await prisma.comment.findUnique({
+			where: {
+				id: commentId,
+			},
+		});
+		if (requiredPost.authorId !== req.user.id) {
+			return res.status(StatusCodes.UNAUTHORIZED).json({
+				success: false,
+				message: 'Access denied',
+			});
+		}
+		next();
+	} catch (error) {
+		return res.status(StatusCodes.BAD_REQUEST).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+module.exports = { isPostAuthor, isCommentAuthor };

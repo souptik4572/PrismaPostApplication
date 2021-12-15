@@ -3,6 +3,7 @@ const cors = require('cors');
 
 const userRoutes = require('./routes/users');
 const postRoutes = require('./routes/posts');
+const commentRoutes = require('./routes/comments');
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/posts/:postId/comments', commentRoutes);
 
 app.get('/', (req, res) => {
 	res.json('This is the root route');
