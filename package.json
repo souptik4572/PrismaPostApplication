@@ -7,7 +7,7 @@
 		"devStart": "nodemon index.js",
 		"start": "node index.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"heroku-postbuild": "prisma db pull && prisma generate"
+		"heroku-postbuild": "prisma generate"
 	},
 	"keywords": [],
 	"author": "",
