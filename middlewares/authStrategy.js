@@ -1,5 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
-const jwt = require('jsonwebtoken');
+const { verifyJwt } = require('../helpers/jwtOperations');
 const prisma = require('../config/prisma-config');
 
 const authProtection = async (req, res, next) => {
@@ -11,10 +11,9 @@ const authProtection = async (req, res, next) => {
 				message: 'Access denied without access token',
 			});
 		}
-		const verifiedUserId = jwt.verify(token, process.env.ACCESS_SECRET_TOKEN).userId;
 		req.user = await prisma.user.findUnique({
 			where: {
-				id: verifiedUserId,
+				id: verifyJwt(token).userId,
 			},
 			select: {
 				id: true,

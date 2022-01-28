@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const { createJwt } = require('../helpers/jwtOperations');
 const prisma = require('../config/prisma-config');
 
 const registerUser = async (req, res) => {
@@ -26,10 +26,11 @@ const registerUser = async (req, res) => {
 				password: hashedPassword,
 			},
 		});
+		const token = createJwt({ userId: newUser.id });
 		return res.status(StatusCodes.CREATED).json({
 			success: true,
 			message: 'Successfully registered new user in the database',
-			user: newUser,
+			token,
 		});
 	} catch (error) {
 		res.status(StatusCodes.BAD_REQUEST).json({
@@ -60,11 +61,10 @@ const loginUser = async (req, res) => {
 				message: 'Passwords do not match',
 			});
 		}
-		const token = jwt.sign({ userId: existingUser.id }, process.env.ACCESS_SECRET_TOKEN, {
-			expiresIn: '3 days',
-		});
+		const token = createJwt({ userId: existingUser.id });
 		return res.status(StatusCodes.CREATED).json({
 			success: true,
+			message: 'Login is successfull',
 			token,
 		});
 	} catch (error) {
@@ -129,7 +129,6 @@ const updateProfile = async (req, res) => {
 		return res.status(StatusCodes.OK).json({
 			success: true,
 			message: 'Profile bio has been updated successfully',
-			updatedProfile,
 		});
 	} catch (error) {
 		res.status(StatusCodes.BAD_REQUEST).json({
