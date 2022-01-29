@@ -9,14 +9,14 @@ const {
 	deleteExistingPost,
 } = require('../controllers/posts');
 
-router.get('/', getAllPosts);
+router.get('/', authProtection(false), getAllPosts);
 
 router.get('/:postId', getParticularPost);
 
-router.put('/', authProtection, createNewPost);
+router.put('/', authProtection(), createNewPost);
 
-router.patch('/:postId', [authProtection, isPostAuthor], updateExistingPost);
+router.patch('/:postId', [authProtection(), isPostAuthor], updateExistingPost);
 
-router.delete('/:postId', [authProtection, isPostAuthor], deleteExistingPost);
+router.delete('/:postId', [authProtection(), isPostAuthor], deleteExistingPost);
 
 module.exports = router;

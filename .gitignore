@@ -2,5 +2,8 @@ node_modules
 # Keep environment variables out of version control
 .env
 
+# All SQL test queries
+*.sql
+
 # Miscellaneous
 .DS_Store

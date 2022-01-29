@@ -6,8 +6,8 @@ router.put('/register', registerUser);
 
 router.post('/login', loginUser);
 
-router.get('/profile', authProtection, getProfile);
+router.get('/profile', authProtection(), getProfile);
 
-router.patch('/profile', authProtection, updateProfile);
+router.patch('/profile', authProtection(), updateProfile);
 
 module.exports = router;

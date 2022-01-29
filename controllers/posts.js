@@ -1,12 +1,17 @@
 const { StatusCodes } = require('http-status-codes');
 const prisma = require('../config/prisma-config');
+const { includeIsAuthor } = require('../helpers/prismaFetch');
 
 const getAllPosts = async (req, res) => {
 	try {
-		const allPosts = await prisma.post.findMany({});
+		const allPosts = await prisma.post.findMany({
+			where: {
+				published: true,
+			},
+		});
 		return res.status(StatusCodes.OK).json({
 			success: true,
-			posts: allPosts,
+			posts: req.user ? includeIsAuthor(allPosts, req.user.id) : allPosts,
 		});
 	} catch (error) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -50,7 +55,7 @@ const createNewPost = async (req, res) => {
 	let { title, content, published } = req.body;
 	published = !!published;
 	try {
-		const newPost = await prisma.post.create({
+		await prisma.post.create({
 			data: {
 				title,
 				content,
@@ -61,7 +66,6 @@ const createNewPost = async (req, res) => {
 		return res.status(StatusCodes.CREATED).json({
 			success: true,
 			message: 'Created new post successfully',
-			post: newPost,
 		});
 	} catch (error) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -80,7 +84,7 @@ const updateExistingPost = async (req, res) => {
 	if (content) updatedData.content = content;
 	if (published) updatedData.published = !!published;
 	try {
-		const updatedPost = await prisma.post.update({
+		await prisma.post.update({
 			where: {
 				id: postId,
 			},
@@ -89,7 +93,6 @@ const updateExistingPost = async (req, res) => {
 		return res.status(StatusCodes.OK).json({
 			success: true,
 			message: `Post with id ${postId} has been updated successfully`,
-			post: updatedPost,
 		});
 	} catch (error) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -103,7 +106,7 @@ const deleteExistingPost = async (req, res) => {
 	let { postId } = req.params;
 	postId = Number(postId);
 	try {
-		const deletePost = await prisma.post.delete({
+		await prisma.post.delete({
 			where: {
 				id: postId,
 			},
@@ -111,7 +114,6 @@ const deleteExistingPost = async (req, res) => {
 		return res.status(StatusCodes.OK).json({
 			success: true,
 			message: `Post with id ${postId} has been deleted successfully`,
-			post: deletePost,
 		});
 	} catch (error) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

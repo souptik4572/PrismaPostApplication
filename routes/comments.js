@@ -12,10 +12,10 @@ const { isCommentAuthor } = require('../middlewares/ownerStrategy');
 
 router.get('/', getAllComments);
 
-router.put('/', authProtection, createNewComment);
+router.put('/', authProtection(), createNewComment);
 
-router.patch('/:commentId', [authProtection, isCommentAuthor], updateExistingComment);
+router.patch('/:commentId', [authProtection(), isCommentAuthor], updateExistingComment);
 
-router.delete('/:commentId', [authProtection, isCommentAuthor], deleteExistingComment);
+router.delete('/:commentId', [authProtection(), isCommentAuthor], deleteExistingComment);
 
 module.exports = router;
